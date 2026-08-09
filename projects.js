@@ -1,4 +1,4 @@
-// GAS Project By Kimhan V2.0
+// GAS Project By Kimhan V2.2
 // แก้ไขผ่านเมนู “จัดการโปรเจกต์” แล้วกด “คัดลอก projects.js” เพื่อนำมาวางทับไฟล์นี้ใน GitHub
 window.DEFAULT_PROJECTS = [
   { name:"New Items V.5", url:"https://itpcmc2024.github.io/New-Items/", iconType:"emoji", icon:"📦", image:"", color:"yellow", description:"ระบบงาน New Items" },
