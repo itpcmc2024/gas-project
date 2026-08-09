@@ -1,30 +1,28 @@
-# GAS Project By Kimhan
+# GAS Project By Kimhan V2.0
 
-GitHub Pages portal สำหรับรวมลิงก์โปรเจกต์ทั้งหมดไว้ในหน้าเดียว
+Portal รวมลิงก์โปรเจกต์บน GitHub Pages
 
-## ติดตั้ง
-1. อัปโหลด `index.html`, `style.css`, `script.js`, `projects.js` ไปที่ root ของ repository `gas-project`
-2. GitHub > Settings > Pages
-3. Source: Deploy from a branch
-4. Branch: `main` / Folder: `/ (root)`
-5. เปิด `https://itpcmc2024.github.io/gas-project/`
+## ไฟล์ที่ต้องอยู่ที่ root ของ repository
+- `index.html`
+- `style.css`
+- `script.js`
+- `projects.js`
 
-## เพิ่มโปรเจกต์ในอนาคต
-- กด `⚙️ จัดการโปรเจกต์`
-- กรอกชื่อ / URL / ไอคอน / คำอธิบาย
-- ข้อมูลจะบันทึกใน browser ด้วย localStorage
+## เพิ่มโปรเจกต์ใหม่
+1. เปิดหน้าเว็บ แล้วกด `⚙️ จัดการโปรเจกต์`
+2. กรอกชื่อ ลิงก์ คำอธิบาย และเลือกสีการ์ด
+3. เลือกไอคอนแบบ Emoji หรือรูปภาพ
+4. กด `＋ เพิ่มการ์ด`
+5. เมื่อจัดรายการเรียบร้อย กด `📋 คัดลอก projects.js`
+6. เปิด `projects.js` ใน GitHub > Edit
+7. `Ctrl+A` แล้ว `Ctrl+V`
+8. Commit changes
 
-### ต้องการให้การ์ดใหม่แสดงทุกเครื่อง
-GitHub Pages เป็น Static Website จึงไม่สามารถบันทึกกลับ GitHub ได้โดยตรงอย่างปลอดภัยโดยไม่ใช้ token/backend
+## การใช้รูปภาพเป็นไอคอน
+สามารถใช้ URL รูปภาพ หรือ path ของไฟล์ใน repository เช่น:
+`assets/icons/my-project.png`
 
-วิธีที่แนะนำ:
-1. เพิ่ม/แก้ไขการ์ดจากเมนูจัดการโปรเจกต์
-2. กด `📋 คัดลอก projects.js`
-3. เปิดไฟล์ `projects.js` ใน GitHub
-4. Edit > วางทับทั้งหมด > Commit changes
+แนะนำให้สร้างโฟลเดอร์ `assets/icons/` และอัปโหลดไฟล์ PNG/SVG/JPG ลงในนั้น
 
-หลัง GitHub Pages deploy เสร็จ ทุกเครื่องจะเห็นรายการใหม่
-
-## สำรองข้อมูล
-- Export JSON เพื่อสำรองรายการ
-- Import JSON เพื่อนำกลับมาใช้ใน browser อื่น
+## หมายเหตุ
+การแก้ไขจากหน้าเว็บจะบันทึกใน localStorage ของเบราว์เซอร์เครื่องนั้นก่อน การคัดลอก `projects.js` ไป Commit บน GitHub คือขั้นตอนที่ทำให้รายการเป็นค่าเริ่มต้นถาวรสำหรับทุกเครื่อง
