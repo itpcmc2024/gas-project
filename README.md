@@ -1,4 +1,4 @@
-# GAS Project By Kimhan V2.1
+# GAS Project By Kimhan V2.2
 
 Portal รวมลิงก์โปรเจกต์บน GitHub Pages
 
@@ -28,7 +28,7 @@ Portal รวมลิงก์โปรเจกต์บน GitHub Pages
 การแก้ไขจากหน้าเว็บจะบันทึกใน localStorage ของเบราว์เซอร์เครื่องนั้นก่อน การคัดลอก `projects.js` ไป Commit บน GitHub คือขั้นตอนที่ทำให้รายการเป็นค่าเริ่มต้นถาวรสำหรับทุกเครื่อง
 
 
-## V2.1 Dark Pastel
+## V2.2 Dark Pastel
 - Soft Charcoal / Dark Pastel background
 - Glassmorphism header
 - Pastel card glow on hover
@@ -36,3 +36,9 @@ Portal รวมลิงก์โปรเจกต์บน GitHub Pages
 - Pin frequently used projects
 - Added peach pastel card color
 - Existing project manager and copy projects.js workflow retained
+
+
+## V2.2 – การจัดเรียงการ์ด
+- บนคอมพิวเตอร์: ลากการ์ดในส่วนโปรเจกต์ทั้งหมดแล้ววางตำแหน่งใหม่ได้ทันที
+- ในเมนู “จัดการโปรเจกต์”: ใช้ปุ่ม ↑ / ↓ เพื่อเลื่อนลำดับ เหมาะกับมือถือและแท็บเล็ต
+- เมื่อลำดับถูกต้องแล้ว กด “คัดลอก projects.js” และวางทับไฟล์บน GitHub เพื่อให้ลำดับใหม่เป็นค่ากลางสำหรับทุกเครื่อง
