@@ -1,15 +1,16 @@
 (() => {
-  const STORAGE_KEY = 'gas-project-by-kimhan.projects.v2';
+  const STORAGE_KEY = 'gas-project-by-kimhan.projects.v2.1';
+  const LEGACY_STORAGE_KEY = 'gas-project-by-kimhan.projects.v2';
   const DEFAULTS = Array.isArray(window.DEFAULT_PROJECTS) ? window.DEFAULT_PROJECTS : [];
-  const ALLOWED_COLORS = ['yellow','blue','green','pink','purple'];
+  const ALLOWED_COLORS = ['yellow','blue','green','pink','purple','peach'];
   let projects = loadProjects();
 
   const $ = (id) => document.getElementById(id);
-  const grid = $('projectGrid'), count = $('projectCount'), modal = $('managerModal'), form = $('projectForm');
+  const grid = $('projectGrid'), pinnedGrid = $('pinnedGrid'), pinnedSection = $('pinnedSection'), count = $('projectCount'), modal = $('managerModal'), form = $('projectForm');
   const editIndex = $('editIndex'), nameInput = $('projectName'), urlInput = $('projectUrl'), descInput = $('projectDesc');
   const iconInput = $('projectIcon'), imageInput = $('projectImage'), colorInput = $('projectColor');
   const emojiFields = $('emojiFields'), imageFields = $('imageFields'), iconPreview = $('iconPreview');
-  const managerList = $('managerList'), cancelEditBtn = $('cancelEditBtn'), saveProjectBtn = $('saveProjectBtn');
+  const managerList = $('managerList'), cancelEditBtn = $('cancelEditBtn'), saveProjectBtn = $('saveProjectBtn'), pinnedInput = $('projectPinned');
 
   function clone(v){ return JSON.parse(JSON.stringify(v)); }
   function normalizeProject(p={}){
@@ -17,12 +18,12 @@
     return {
       name:String(p.name || ''), url:String(p.url || ''), description:String(p.description || 'เปิดใช้งานโปรเจกต์'),
       color:ALLOWED_COLORS.includes(p.color) ? p.color : 'yellow', iconType,
-      icon:String(p.icon || '✨'), image:String(p.image || '')
+      icon:String(p.icon || '✨'), image:String(p.image || ''), pinned:Boolean(p.pinned)
     };
   }
   function loadProjects(){
     try{
-      const saved=localStorage.getItem(STORAGE_KEY);
+      const saved=localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
       if(saved){ const parsed=JSON.parse(saved); if(Array.isArray(parsed)) return parsed.map(normalizeProject); }
     }catch(e){ console.warn('Cannot load saved projects',e); }
     return clone(DEFAULTS).map(normalizeProject);
@@ -41,10 +42,16 @@
     return `<div class="${cls}" aria-hidden="true">${esc(p.icon || '✨')}</div>`;
   }
 
+  function cardMarkup(p, showPin=true){
+    return `<article class="project-card" data-color="${esc(p.color)}">${p.pinned && showPin ? '<span class="pin-badge" title="ปักหมุดแล้ว">📌</span>' : ''}${iconMarkup(p)}<h3>${esc(p.name)}</h3><p>${esc(p.description)}</p><a class="open-link" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer">เปิดระบบ <span aria-hidden="true">↗</span></a></article>`;
+  }
   function render(){
     count.textContent=`${projects.length} Project${projects.length===1?'':'s'}`;
-    if(!projects.length){ grid.innerHTML='<div class="empty-state">ยังไม่มีโปรเจกต์ กด “จัดการโปรเจกต์” เพื่อเพิ่มการ์ดใหม่</div>'; return; }
-    grid.innerHTML=projects.map(p=>`<article class="project-card" data-color="${esc(p.color)}">${iconMarkup(p)}<h3>${esc(p.name)}</h3><p>${esc(p.description)}</p><a class="open-link" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer">เปิดระบบ <span aria-hidden="true">↗</span></a></article>`).join('');
+    if(!projects.length){ pinnedSection.hidden=true; grid.innerHTML='<div class="empty-state">ยังไม่มีโปรเจกต์ กด “จัดการโปรเจกต์” เพื่อเพิ่มการ์ดใหม่</div>'; return; }
+    const pinned=projects.filter(p=>p.pinned);
+    pinnedSection.hidden=!pinned.length;
+    pinnedGrid.innerHTML=pinned.map(p=>cardMarkup(p,false)).join('');
+    grid.innerHTML=projects.map(p=>cardMarkup(p,true)).join('');
   }
   function renderManager(){
     managerList.innerHTML=projects.map((p,i)=>`<div class="manager-row">${iconMarkup(p,'manager-row-icon')}<div><strong>${esc(p.name)}</strong><small>${esc(p.url)}</small></div><div class="row-actions"><button type="button" data-edit="${i}">✏️ แก้ไข</button><button type="button" class="delete" data-delete="${i}">🗑️ ลบ</button></div></div>`).join('') || '<div class="empty-state">ยังไม่มีโปรเจกต์</div>';
@@ -68,7 +75,7 @@
 
   form.addEventListener('submit',e=>{
     e.preventDefault(); const mode=selectedIconMode();
-    const item=normalizeProject({name:nameInput.value.trim(),url:urlInput.value.trim(),description:descInput.value.trim()||'เปิดใช้งานโปรเจกต์',color:colorInput.value,iconType:mode,icon:iconInput.value.trim()||'✨',image:imageInput.value.trim()});
+    const item=normalizeProject({name:nameInput.value.trim(),url:urlInput.value.trim(),description:descInput.value.trim()||'เปิดใช้งานโปรเจกต์',color:colorInput.value,iconType:mode,icon:iconInput.value.trim()||'✨',image:imageInput.value.trim(),pinned:pinnedInput.checked});
     if(safeUrl(item.url)==='#'){showToast('ลิงก์โปรเจกต์ไม่ถูกต้อง');return;}
     if(mode==='image' && !safeImageSrc(item.image)){showToast('กรุณาใส่ที่อยู่รูปภาพ');return;}
     const idx=editIndex.value===''?-1:Number(editIndex.value);
@@ -78,7 +85,7 @@
 
   managerList.addEventListener('click',e=>{
     const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
-    if(edit){const i=Number(edit.dataset.edit),p=projects[i];editIndex.value=i;nameInput.value=p.name;urlInput.value=p.url;descInput.value=p.description||'';colorInput.value=p.color||'yellow';iconInput.value=p.icon||'';imageInput.value=p.image||'';setIconMode(p.iconType);saveProjectBtn.textContent='💾 บันทึกการแก้ไข';cancelEditBtn.hidden=false;nameInput.focus();}
+    if(edit){const i=Number(edit.dataset.edit),p=projects[i];editIndex.value=i;nameInput.value=p.name;urlInput.value=p.url;descInput.value=p.description||'';colorInput.value=p.color||'yellow';iconInput.value=p.icon||'';imageInput.value=p.image||'';pinnedInput.checked=Boolean(p.pinned);setIconMode(p.iconType);saveProjectBtn.textContent='💾 บันทึกการแก้ไข';cancelEditBtn.hidden=false;nameInput.focus();}
     if(del){const i=Number(del.dataset.delete);if(confirm(`ลบการ์ด “${projects[i]?.name||''}” ใช่หรือไม่?`)){projects.splice(i,1);persist();render();renderManager();resetForm();showToast('ลบการ์ดแล้ว');}}
   });
 
@@ -88,9 +95,17 @@
   modal.addEventListener('click',e=>{if(e.target===modal)closeManager();}); document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeManager();});
   $('resetBtn').addEventListener('click',()=>{if(confirm('คืนค่ารายการโปรเจกต์เริ่มต้นทั้งหมดใช่หรือไม่?')){projects=clone(DEFAULTS).map(normalizeProject);persist();render();renderManager();resetForm();showToast('คืนค่าเริ่มต้นแล้ว');}});
   $('copyConfigBtn').addEventListener('click',async()=>{
-    const code=`// GAS Project By Kimhan V2.0\n// แก้ไขผ่านเมนู “จัดการโปรเจกต์” แล้วกด “คัดลอก projects.js” เพื่อนำมาวางทับไฟล์นี้ใน GitHub\nwindow.DEFAULT_PROJECTS = ${JSON.stringify(projects,null,2)};\n`;
+    const code=`// GAS Project By Kimhan V2.1\n// แก้ไขผ่านเมนู “จัดการโปรเจกต์” แล้วกด “คัดลอก projects.js” เพื่อนำมาวางทับไฟล์นี้ใน GitHub\nwindow.DEFAULT_PROJECTS = ${JSON.stringify(projects,null,2)};\n`;
     try{await navigator.clipboard.writeText(code);showToast('คัดลอก projects.js แล้ว');}
     catch{const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('คัดลอก projects.js แล้ว');}
   });
+  function updateClock(){
+    const now=new Date();
+    const dateFmt=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    const timeFmt=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    $('currentDate').textContent=dateFmt.format(now);
+    $('currentTime').textContent=timeFmt.format(now);
+  }
+  updateClock(); setInterval(updateClock,1000);
   render(); updateIconPreview();
 })();
