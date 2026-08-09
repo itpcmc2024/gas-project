@@ -1,6 +1,6 @@
 (() => {
-  const STORAGE_KEY = 'gas-project-by-kimhan.projects.v2.1';
-  const LEGACY_STORAGE_KEY = 'gas-project-by-kimhan.projects.v2';
+  const STORAGE_KEY = 'gas-project-by-kimhan.projects.v2.2';
+  const LEGACY_STORAGE_KEYS = ['gas-project-by-kimhan.projects.v2.1','gas-project-by-kimhan.projects.v2'];
   const DEFAULTS = Array.isArray(window.DEFAULT_PROJECTS) ? window.DEFAULT_PROJECTS : [];
   const ALLOWED_COLORS = ['yellow','blue','green','pink','purple','peach'];
   let projects = loadProjects();
@@ -23,7 +23,7 @@
   }
   function loadProjects(){
     try{
-      const saved=localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+      const saved=localStorage.getItem(STORAGE_KEY) || LEGACY_STORAGE_KEYS.map(k=>localStorage.getItem(k)).find(Boolean);
       if(saved){ const parsed=JSON.parse(saved); if(Array.isArray(parsed)) return parsed.map(normalizeProject); }
     }catch(e){ console.warn('Cannot load saved projects',e); }
     return clone(DEFAULTS).map(normalizeProject);
@@ -42,8 +42,10 @@
     return `<div class="${cls}" aria-hidden="true">${esc(p.icon || '✨')}</div>`;
   }
 
-  function cardMarkup(p, showPin=true){
-    return `<article class="project-card" data-color="${esc(p.color)}">${p.pinned && showPin ? '<span class="pin-badge" title="ปักหมุดแล้ว">📌</span>' : ''}${iconMarkup(p)}<h3>${esc(p.name)}</h3><p>${esc(p.description)}</p><a class="open-link" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer">เปิดระบบ <span aria-hidden="true">↗</span></a></article>`;
+  function cardMarkup(p, showPin=true, index=-1, draggable=false){
+    const dragAttrs = draggable ? ` draggable="true" data-index="${index}"` : '';
+    const handle = draggable ? '<span class="drag-handle" title="ลากเพื่อจัดเรียง" aria-label="ลากเพื่อจัดเรียง">⠿</span>' : '';
+    return `<article class="project-card" data-color="${esc(p.color)}"${dragAttrs}>${handle}${p.pinned && showPin ? '<span class="pin-badge" title="ปักหมุดแล้ว">📌</span>' : ''}${iconMarkup(p)}<h3>${esc(p.name)}</h3><p>${esc(p.description)}</p><a class="open-link" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer">เปิดระบบ <span aria-hidden="true">↗</span></a></article>`;
   }
   function render(){
     count.textContent=`${projects.length} Project${projects.length===1?'':'s'}`;
@@ -51,10 +53,46 @@
     const pinned=projects.filter(p=>p.pinned);
     pinnedSection.hidden=!pinned.length;
     pinnedGrid.innerHTML=pinned.map(p=>cardMarkup(p,false)).join('');
-    grid.innerHTML=projects.map(p=>cardMarkup(p,true)).join('');
+    grid.innerHTML=projects.map((p,i)=>cardMarkup(p,true,i,true)).join('');
+    bindCardDrag();
+  }
+  function moveProject(from,to){
+    if(from===to || from<0 || to<0 || from>=projects.length || to>=projects.length) return;
+    const [moved]=projects.splice(from,1);
+    projects.splice(to,0,moved);
+    persist(); render(); renderManager();
+    showToast('บันทึกลำดับใหม่แล้ว');
+  }
+  function bindCardDrag(){
+    let dragIndex=null;
+    grid.querySelectorAll('.project-card[draggable="true"]').forEach(card=>{
+      card.addEventListener('dragstart',e=>{
+        if(e.target.closest('.open-link')){ e.preventDefault(); return; }
+        dragIndex=Number(card.dataset.index);
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed='move';
+        try{e.dataTransfer.setData('text/plain',String(dragIndex));}catch{}
+      });
+      card.addEventListener('dragend',()=>{
+        card.classList.remove('dragging');
+        grid.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+        dragIndex=null;
+      });
+      card.addEventListener('dragover',e=>{
+        e.preventDefault(); e.dataTransfer.dropEffect='move';
+        if(dragIndex!==null && Number(card.dataset.index)!==dragIndex) card.classList.add('drag-over');
+      });
+      card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));
+      card.addEventListener('drop',e=>{
+        e.preventDefault(); card.classList.remove('drag-over');
+        const from=dragIndex!==null?dragIndex:Number(e.dataTransfer.getData('text/plain'));
+        const to=Number(card.dataset.index);
+        if(Number.isInteger(from) && Number.isInteger(to) && from!==to) moveProject(from,to);
+      });
+    });
   }
   function renderManager(){
-    managerList.innerHTML=projects.map((p,i)=>`<div class="manager-row">${iconMarkup(p,'manager-row-icon')}<div><strong>${esc(p.name)}</strong><small>${esc(p.url)}</small></div><div class="row-actions"><button type="button" data-edit="${i}">✏️ แก้ไข</button><button type="button" class="delete" data-delete="${i}">🗑️ ลบ</button></div></div>`).join('') || '<div class="empty-state">ยังไม่มีโปรเจกต์</div>';
+    managerList.innerHTML=projects.map((p,i)=>`<div class="manager-row">${iconMarkup(p,'manager-row-icon')}<div><strong><span class="order-no">${i+1}.</span> ${esc(p.name)}</strong><small>${esc(p.url)}</small></div><div class="row-actions"><button type="button" class="move-btn" data-up="${i}" ${i===0?'disabled':''} title="เลื่อนขึ้น">↑</button><button type="button" class="move-btn" data-down="${i}" ${i===projects.length-1?'disabled':''} title="เลื่อนลง">↓</button><button type="button" data-edit="${i}">✏️ แก้ไข</button><button type="button" class="delete" data-delete="${i}">🗑️ ลบ</button></div></div>`).join('') || '<div class="empty-state">ยังไม่มีโปรเจกต์</div>';
   }
   function selectedIconMode(){ return document.querySelector('input[name="iconMode"]:checked')?.value || 'emoji'; }
   function setIconMode(mode){
@@ -84,7 +122,9 @@
   });
 
   managerList.addEventListener('click',e=>{
-    const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
+    const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]'),up=e.target.closest('[data-up]'),down=e.target.closest('[data-down]');
+    if(up){const i=Number(up.dataset.up);moveProject(i,i-1);return;}
+    if(down){const i=Number(down.dataset.down);moveProject(i,i+1);return;}
     if(edit){const i=Number(edit.dataset.edit),p=projects[i];editIndex.value=i;nameInput.value=p.name;urlInput.value=p.url;descInput.value=p.description||'';colorInput.value=p.color||'yellow';iconInput.value=p.icon||'';imageInput.value=p.image||'';pinnedInput.checked=Boolean(p.pinned);setIconMode(p.iconType);saveProjectBtn.textContent='💾 บันทึกการแก้ไข';cancelEditBtn.hidden=false;nameInput.focus();}
     if(del){const i=Number(del.dataset.delete);if(confirm(`ลบการ์ด “${projects[i]?.name||''}” ใช่หรือไม่?`)){projects.splice(i,1);persist();render();renderManager();resetForm();showToast('ลบการ์ดแล้ว');}}
   });
@@ -95,7 +135,7 @@
   modal.addEventListener('click',e=>{if(e.target===modal)closeManager();}); document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeManager();});
   $('resetBtn').addEventListener('click',()=>{if(confirm('คืนค่ารายการโปรเจกต์เริ่มต้นทั้งหมดใช่หรือไม่?')){projects=clone(DEFAULTS).map(normalizeProject);persist();render();renderManager();resetForm();showToast('คืนค่าเริ่มต้นแล้ว');}});
   $('copyConfigBtn').addEventListener('click',async()=>{
-    const code=`// GAS Project By Kimhan V2.1\n// แก้ไขผ่านเมนู “จัดการโปรเจกต์” แล้วกด “คัดลอก projects.js” เพื่อนำมาวางทับไฟล์นี้ใน GitHub\nwindow.DEFAULT_PROJECTS = ${JSON.stringify(projects,null,2)};\n`;
+    const code=`// GAS Project By Kimhan V2.2\n// แก้ไขผ่านเมนู “จัดการโปรเจกต์” แล้วกด “คัดลอก projects.js” เพื่อนำมาวางทับไฟล์นี้ใน GitHub\nwindow.DEFAULT_PROJECTS = ${JSON.stringify(projects,null,2)};\n`;
     try{await navigator.clipboard.writeText(code);showToast('คัดลอก projects.js แล้ว');}
     catch{const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('คัดลอก projects.js แล้ว');}
   });
