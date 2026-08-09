@@ -14,12 +14,15 @@
   <div class="page-shell">
     <header class="hero">
       <div class="brand-mark" aria-hidden="true">✨</div>
-      <div>
-        <p class="eyebrow">PROJECT PORTAL</p>
+      <div class="hero-copy">
+        <div class="title-line">
+          <p class="eyebrow">PROJECT PORTAL</p>
+          <span class="version-badge">V2.0</span>
+        </div>
         <h1>GAS Project By Kimhan</h1>
         <p class="subtitle">ศูนย์รวมลิงก์ระบบงานและโปรเจกต์สำหรับใช้งาน</p>
       </div>
-      <button class="manage-btn" id="openManagerBtn" type="button" title="เพิ่ม แก้ไข หรือลบการ์ดโปรเจกต์">⚙️ จัดการโปรเจกต์</button>
+      <button class="manage-btn" id="openManagerBtn" type="button">⚙️ จัดการโปรเจกต์</button>
     </header>
 
     <main>
@@ -30,7 +33,6 @@
         </div>
         <span class="count-pill" id="projectCount">0 Projects</span>
       </section>
-
       <section class="project-grid" id="projectGrid" aria-live="polite"></section>
     </main>
 
@@ -51,23 +53,60 @@
       </div>
 
       <div class="notice">
-        <strong>หมายเหตุ:</strong> หน้า GitHub Pages เป็นเว็บแบบ Static การเพิ่ม/แก้ไขจากเมนูนี้จะจำในเบราว์เซอร์เครื่องนี้ก่อน หากต้องการให้ทุกเครื่องเห็นเหมือนกัน ให้กด “คัดลอก projects.js” แล้วนำไปแทนไฟล์ <code>projects.js</code> ใน GitHub
+        <strong>วิธีใช้งาน:</strong> เพิ่ม/แก้ไข/ลบการ์ดได้จากหน้านี้ทันที การเปลี่ยนแปลงจะจำบนเบราว์เซอร์เครื่องนี้ก่อน เมื่อจัดเสร็จให้กด <strong>“คัดลอก projects.js”</strong> แล้วนำไปวางทับไฟล์ <code>projects.js</code> ใน GitHub เพื่อให้ทุกเครื่องเห็นเหมือนกัน
       </div>
 
       <form id="projectForm" class="project-form">
         <input type="hidden" id="editIndex" value="" />
+
         <label>ชื่อโปรเจกต์
           <input id="projectName" required placeholder="เช่น My New Project" />
         </label>
+
         <label>ลิงก์โปรเจกต์
           <input id="projectUrl" type="url" required placeholder="https://..." />
         </label>
-        <label>ไอคอน
-          <input id="projectIcon" maxlength="8" placeholder="เช่น 📦" />
-        </label>
+
         <label>คำอธิบายสั้น ๆ
           <input id="projectDesc" maxlength="120" placeholder="เช่น ระบบบันทึกข้อมูลและติดตามสถานะ" />
         </label>
+
+        <label>สีการ์ด
+          <select id="projectColor">
+            <option value="yellow">💛 เหลืองพาสเทล</option>
+            <option value="blue">🩵 ฟ้าพาสเทล</option>
+            <option value="green">💚 เขียวพาสเทล</option>
+            <option value="pink">🩷 ชมพูพาสเทล</option>
+            <option value="purple">💜 ม่วงพาสเทล</option>
+          </select>
+        </label>
+
+        <div class="icon-section">
+          <div class="field-title">ไอคอนการ์ด</div>
+          <div class="icon-mode-row">
+            <label class="radio-pill"><input type="radio" name="iconMode" value="emoji" checked> Emoji</label>
+            <label class="radio-pill"><input type="radio" name="iconMode" value="image"> รูปภาพ</label>
+          </div>
+
+          <div id="emojiFields" class="icon-fields">
+            <label>Emoji
+              <input id="projectIcon" maxlength="12" placeholder="เช่น 📦" />
+            </label>
+          </div>
+
+          <div id="imageFields" class="icon-fields" hidden>
+            <label>ที่อยู่รูปภาพ
+              <input id="projectImage" placeholder="เช่น assets/icons/my-project.png หรือ https://..." />
+            </label>
+            <div class="field-help">หากใช้ไฟล์ใน GitHub แนะนำเก็บไว้ใน <code>assets/icons/</code> แล้วใส่ชื่อเช่น <code>assets/icons/project.png</code></div>
+          </div>
+
+          <div class="icon-preview-wrap">
+            <span>ตัวอย่าง</span>
+            <div class="icon-preview" id="iconPreview">✨</div>
+          </div>
+        </div>
+
         <div class="form-actions">
           <button class="primary-btn" type="submit" id="saveProjectBtn">＋ เพิ่มการ์ด</button>
           <button class="secondary-btn" type="button" id="cancelEditBtn" hidden>ยกเลิกแก้ไข</button>
@@ -75,10 +114,12 @@
       </form>
 
       <div class="manager-toolbar">
-        <button class="secondary-btn" id="copyConfigBtn" type="button">📋 คัดลอก projects.js</button>
-        <button class="secondary-btn" id="exportBtn" type="button">⬇ Export JSON</button>
-        <label class="secondary-btn file-btn">⬆ Import JSON<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+        <button class="copy-btn" id="copyConfigBtn" type="button">📋 คัดลอก projects.js</button>
         <button class="danger-ghost" id="resetBtn" type="button">↺ คืนค่าเริ่มต้น</button>
+      </div>
+
+      <div class="copy-guide">
+        <strong>อัปเดตถาวรใน GitHub:</strong> กด “คัดลอก projects.js” → เปิดไฟล์ <code>projects.js</code> ใน Repository → Edit → Ctrl+A → Ctrl+V → Commit changes
       </div>
 
       <div id="managerList" class="manager-list"></div>
@@ -91,4 +132,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
