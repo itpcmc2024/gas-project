@@ -1,1 +1,94 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#F6C95F" />
+  <title>GAS Project By Kimhan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="brand-mark" aria-hidden="true">✨</div>
+      <div>
+        <p class="eyebrow">PROJECT PORTAL</p>
+        <h1>GAS Project By Kimhan</h1>
+        <p class="subtitle">ศูนย์รวมลิงก์ระบบงานและโปรเจกต์สำหรับใช้งาน</p>
+      </div>
+      <button class="manage-btn" id="openManagerBtn" type="button" title="เพิ่ม แก้ไข หรือลบการ์ดโปรเจกต์">⚙️ จัดการโปรเจกต์</button>
+    </header>
+
+    <main>
+      <section class="section-head">
+        <div>
+          <p class="section-kicker">MY PROJECTS</p>
+          <h2>เลือกระบบที่ต้องการใช้งาน</h2>
+        </div>
+        <span class="count-pill" id="projectCount">0 Projects</span>
+      </section>
+
+      <section class="project-grid" id="projectGrid" aria-live="polite"></section>
+    </main>
+
+    <footer>
+      <div>© 2024-2026 By Kimhan</div>
+      <div>All Rights Reserved.</div>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="managerModal" hidden>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="managerTitle">
+      <div class="modal-head">
+        <div>
+          <p class="section-kicker">PROJECT MANAGER</p>
+          <h2 id="managerTitle">จัดการการ์ดโปรเจกต์</h2>
+        </div>
+        <button class="icon-btn" id="closeManagerBtn" type="button" aria-label="ปิด">✕</button>
+      </div>
+
+      <div class="notice">
+        <strong>หมายเหตุ:</strong> หน้า GitHub Pages เป็นเว็บแบบ Static การเพิ่ม/แก้ไขจากเมนูนี้จะจำในเบราว์เซอร์เครื่องนี้ก่อน หากต้องการให้ทุกเครื่องเห็นเหมือนกัน ให้กด “คัดลอก projects.js” แล้วนำไปแทนไฟล์ <code>projects.js</code> ใน GitHub
+      </div>
+
+      <form id="projectForm" class="project-form">
+        <input type="hidden" id="editIndex" value="" />
+        <label>ชื่อโปรเจกต์
+          <input id="projectName" required placeholder="เช่น My New Project" />
+        </label>
+        <label>ลิงก์โปรเจกต์
+          <input id="projectUrl" type="url" required placeholder="https://..." />
+        </label>
+        <label>ไอคอน
+          <input id="projectIcon" maxlength="8" placeholder="เช่น 📦" />
+        </label>
+        <label>คำอธิบายสั้น ๆ
+          <input id="projectDesc" maxlength="120" placeholder="เช่น ระบบบันทึกข้อมูลและติดตามสถานะ" />
+        </label>
+        <div class="form-actions">
+          <button class="primary-btn" type="submit" id="saveProjectBtn">＋ เพิ่มการ์ด</button>
+          <button class="secondary-btn" type="button" id="cancelEditBtn" hidden>ยกเลิกแก้ไข</button>
+        </div>
+      </form>
+
+      <div class="manager-toolbar">
+        <button class="secondary-btn" id="copyConfigBtn" type="button">📋 คัดลอก projects.js</button>
+        <button class="secondary-btn" id="exportBtn" type="button">⬇ Export JSON</button>
+        <label class="secondary-btn file-btn">⬆ Import JSON<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+        <button class="danger-ghost" id="resetBtn" type="button">↺ คืนค่าเริ่มต้น</button>
+      </div>
+
+      <div id="managerList" class="manager-list"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="projects.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
 
