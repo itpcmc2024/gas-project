@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#F6C95F" />
+  <meta name="theme-color" content="#24252A" />
   <title>GAS Project By Kimhan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,12 +17,18 @@
       <div class="hero-copy">
         <div class="title-line">
           <p class="eyebrow">PROJECT PORTAL</p>
-          <span class="version-badge">V2.0</span>
+          <span class="version-badge">V2.1</span>
         </div>
         <h1>GAS Project By Kimhan</h1>
         <p class="subtitle">ศูนย์รวมลิงก์ระบบงานและโปรเจกต์สำหรับใช้งาน</p>
       </div>
-      <button class="manage-btn" id="openManagerBtn" type="button">⚙️ จัดการโปรเจกต์</button>
+      <div class="hero-actions">
+        <div class="clock-box" aria-label="วันที่และเวลาปัจจุบัน">
+          <div id="currentDate" class="current-date">--</div>
+          <div id="currentTime" class="current-time">--:--</div>
+        </div>
+        <button class="manage-btn" id="openManagerBtn" type="button">⚙️ จัดการโปรเจกต์</button>
+      </div>
     </header>
 
     <main>
@@ -32,6 +38,10 @@
           <h2>เลือกระบบที่ต้องการใช้งาน</h2>
         </div>
         <span class="count-pill" id="projectCount">0 Projects</span>
+      </section>
+      <section class="pinned-section" id="pinnedSection" hidden>
+        <div class="pinned-head"><span>📌 โปรเจกต์ที่ปักหมุด</span><small>เข้าถึงระบบที่ใช้บ่อยได้เร็วขึ้น</small></div>
+        <section class="project-grid pinned-grid" id="pinnedGrid" aria-live="polite"></section>
       </section>
       <section class="project-grid" id="projectGrid" aria-live="polite"></section>
     </main>
@@ -78,6 +88,7 @@
             <option value="green">💚 เขียวพาสเทล</option>
             <option value="pink">🩷 ชมพูพาสเทล</option>
             <option value="purple">💜 ม่วงพาสเทล</option>
+            <option value="peach">🧡 พีชพาสเทล</option>
           </select>
         </label>
 
@@ -106,6 +117,8 @@
             <div class="icon-preview" id="iconPreview">✨</div>
           </div>
         </div>
+
+        <label class="pin-control"><input id="projectPinned" type="checkbox" /> 📌 ปักหมุดโปรเจกต์นี้ไว้ด้านบน</label>
 
         <div class="form-actions">
           <button class="primary-btn" type="submit" id="saveProjectBtn">＋ เพิ่มการ์ด</button>
