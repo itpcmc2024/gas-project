@@ -2,22 +2,22 @@
 // จัดลำดับ/แก้ไขจากเมนู แล้วคัดลอกไฟล์นี้ไปวางทับ projects.js บน GitHub
 window.DEFAULT_PROJECTS = [
   {
-    "name": "New Items V.5",
-    "url": "https://itpcmc2024.github.io/New-Items/",
-    "description": "ระบบงาน New Items",
-    "color": "yellow",
-    "iconType": "emoji",
-    "icon": "📦",
-    "image": "",
-    "pinned": false
-  },
-  {
     "name": "SK-Apartment V.3",
     "url": "https://itpcmc2024.github.io/sk-apartment/",
     "description": "ระบบจัดการงาน SK-Apartment",
     "color": "green",
     "iconType": "emoji",
     "icon": "🏠",
+    "image": "",
+    "pinned": false
+  },
+  {
+    "name": "New Items V.5",
+    "url": "https://itpcmc2024.github.io/New-Items/",
+    "description": "ระบบงาน New Items",
+    "color": "yellow",
+    "iconType": "emoji",
+    "icon": "📦",
     "image": "",
     "pinned": false
   },
@@ -88,6 +88,16 @@ window.DEFAULT_PROJECTS = [
     "color": "pink",
     "iconType": "emoji",
     "icon": "🥗",
+    "image": "",
+    "pinned": false
+  },
+  {
+    "name": "SAP Notify",
+    "url": "https://itpcmc2024.github.io/sap-notify/",
+    "description": "แจ้งปัญหาการใช้งาน ระบบ SAP",
+    "color": "peach",
+    "iconType": "emoji",
+    "icon": "💰",
     "image": "",
     "pinned": false
   }
