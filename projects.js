@@ -22,6 +22,16 @@ window.DEFAULT_PROJECTS = [
     "pinned": false
   },
   {
+    "name": "Med_Supply_Report",
+    "url": "https://itpcmc2024.github.io/Med_Supply_Report/",
+    "description": "รายการ items ชำระเงินเอง คกก.วัสดุการแพทย์",
+    "color": "yellow",
+    "iconType": "emoji",
+    "icon": "📚",
+    "image": "",
+    "pinned": false
+  },
+  {
     "name": "SSO Toolkit V.4",
     "url": "https://itpcmc2024.github.io/it-ssop-claim/",
     "description": "ศูนย์รวมเครื่องมือจัดการงานประกันสังคม",
