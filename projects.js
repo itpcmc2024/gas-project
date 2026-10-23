@@ -115,7 +115,7 @@ window.DEFAULT_PROJECTS = [
     "name": "Request Cost Center",
     "url": "https://itpcmc2024.github.io/Request-Cost/",
     "description": "ขอศูนย์ต้นทุนในSAP งานเศรษฐศาสตร์",
-    "color": "pink",
+    "color": "peach",
     "iconType": "emoji",
     "icon": "🏬",
     "image": "",
