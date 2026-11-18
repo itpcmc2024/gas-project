@@ -130,5 +130,15 @@ window.DEFAULT_PROJECTS = [
     "icon": "🏬",
     "image": "",
     "pinned": false
+  },
+  {
+    "name": "Parcel Deliver System",
+    "url": "https://itpcmc2024.github.io/admin-parcel-deliver/",
+    "description": "ระบบ รับ-ส่งพัสดุ งานบริหาร",
+    "color": "peach",
+    "iconType": "emoji",
+    "icon": "🚚",
+    "image": "",
+    "pinned": false
   }
 ];
