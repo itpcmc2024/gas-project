@@ -140,5 +140,15 @@ window.DEFAULT_PROJECTS = [
     "icon": "🚚",
     "image": "",
     "pinned": false
+  },
+  {
+    "name": "QA-ExPNet 6",
+    "url": "https://itpcmc2024.github.io/QA-ExPNet6/",
+    "description": "ลงทะเบียนตอบรับสัมนา 8 สถาบันของ QA",
+    "color": "peach",
+    "iconType": "emoji",
+    "icon": "📝",
+    "image": "",
+    "pinned": false
   }
 ];
