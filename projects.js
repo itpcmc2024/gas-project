@@ -150,5 +150,15 @@ window.DEFAULT_PROJECTS = [
     "icon": "📝",
     "image": "",
     "pinned": false
+  },
+  {
+    "name": "SAP DATA Search",
+    "url": "https://itpcmc2024.github.io/sap-data-search/",
+    "description": "ค้นหาข้อมูลในระบบ SAP ทำให้คลังพัสดุ",
+    "color": "pink",
+    "iconType": "emoji",
+    "icon": "🕵️‍♀️",
+    "image": "",
+    "pinned": false
   }
 ];
